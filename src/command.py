@@ -39,6 +39,10 @@ def long_read_cmd(cmd: int, p1: int, p2: int = 0, p3: int = 0, len: int = 2):
     return bytes(res)
 
 
+outer_step = 256
+inner_step = 64
+
+
 def std_write_cmd(cmd: int, param: int = 0, data: bytes = b"\x00", dataLen: int = -1):
     if dataLen == -1:
         dataLen = len(data)
@@ -50,9 +54,6 @@ def std_write_cmd(cmd: int, param: int = 0, data: bytes = b"\x00", dataLen: int 
         _dev.ctrl_transfer(0x41, 0x45, 0x78, 0x1D00, d)
         block()
         return
-
-    outer_step = 256
-    inner_step = 64
 
     outers = chunks(data, outer_step)
     i = 0
@@ -77,3 +78,22 @@ def std_write_cmd(cmd: int, param: int = 0, data: bytes = b"\x00", dataLen: int 
                 _dev.ctrl_transfer(0x41, 0x45, 0x78, 0x9D08 + j, inner)
             block()
             j += inner_step
+
+
+def std_read_cmd(cmd: int, param: int = 0, dataLen: int = 0) -> bytes:
+    if dataLen == 0:
+        return b""
+
+    param = struct.unpack("<I", struct.pack(">I", param))[0]
+
+    result = b""
+    for i in range(0, dataLen, outer_step):
+        to_read = min(dataLen - i, outer_step)
+        a = struct.pack("<H", cmd) + struct.pack(">IH", param + i, to_read)
+        _dev.ctrl_transfer(0x41, 0x45, 0x78, 0x1D00, a)
+        block()
+
+        res = _dev.ctrl_transfer(0xC1, 0x44, 0x78, 0x1D08, to_read)
+        result += bytes(res)
+
+    return result
