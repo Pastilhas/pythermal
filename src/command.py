@@ -1,3 +1,4 @@
+from typing import Generator
 import usb.core
 import usb.util
 import struct
@@ -5,8 +6,11 @@ import time
 
 _dev: usb.core.Device
 
+outer_step = 256
+inner_step = 64
 
-def chunks(l: bytes, n: int):
+
+def chunks(l: bytes, n: int) -> Generator[bytes]:
     for i in range(0, len(l), n):
         yield l[i : i + n]
 
@@ -25,7 +29,7 @@ def block(timeout: int = 5) -> bool:
     return False
 
 
-def long_write_cmd(cmd: int, p1: int, p2: int, p3: int = 0, p4: int = 0):
+def long_write_cmd(cmd: int, p1: int, p2: int, p3: int = 0, p4: int = 0) -> None:
     a = struct.pack("<H", cmd) + struct.pack(">HI", p1, p2)
     b = struct.pack(">II", p3, p4)
     _dev.ctrl_transfer(0x41, 0x45, 0x78, 0x9D00, a)
@@ -33,21 +37,19 @@ def long_write_cmd(cmd: int, p1: int, p2: int, p3: int = 0, p4: int = 0):
     block()
 
 
-def long_read_cmd(cmd: int, p1: int, p2: int = 0, p3: int = 0, len: int = 2):
+def long_read_cmd(cmd: int, p1: int, p2: int = 0, p3: int = 0, len: int = 2) -> bytes:
     long_write_cmd(cmd, p1, p2, p3, len)
     res = _dev.ctrl_transfer(0xC1, 0x44, 0x78, 0x1D10, len)
     return bytes(res)
 
 
-outer_step = 256
-inner_step = 64
-
-
-def std_write_cmd(cmd: int, param: int = 0, data: bytes = b"\x00", dataLen: int = -1):
+def std_write_cmd(
+    cmd: int, param: int = 0, data: bytes = b"\x00", dataLen: int = -1
+) -> None:
     if dataLen == -1:
         dataLen = len(data)
 
-    param = struct.unpack("<I", struct.pack(">I", param))[0]  # switch endinanness
+    param = struct.unpack("<I", struct.pack(">I", param))[0]
 
     if dataLen == 0 or data == b"\x00":
         d = struct.pack("<H", cmd) + struct.pack(">I2x", param)
@@ -86,7 +88,7 @@ def std_read_cmd(cmd: int, param: int = 0, dataLen: int = 0) -> bytes:
 
     param = struct.unpack("<I", struct.pack(">I", param))[0]
 
-    result = b""
+    result: bytes = b""
     for i in range(0, dataLen, outer_step):
         to_read = min(dataLen - i, outer_step)
         a = struct.pack("<H", cmd) + struct.pack(">IH", param + i, to_read)
