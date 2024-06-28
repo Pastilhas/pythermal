@@ -10,6 +10,7 @@ args = parser.parse_args()
 
 dev = args.device
 cap = cv.VideoCapture(dev)
+cap.set(cv.CAP_PROP_CONVERT_RGB, 0)
 
 brightness = 0.01
 contrast = 0.95
@@ -21,7 +22,7 @@ cv.resizeWindow("preview", w, h)
 ret, frame = cap.read()
 while ret:
     frame = video.raw(frame, contrast, brightness)
-    cv.imshow("preview", frame)
+    cv.imshow("preview", frame["img"])
 
     keyPress = cv.waitKey(1)
     if keyPress == ord("q"):
