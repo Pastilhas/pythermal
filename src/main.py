@@ -1,10 +1,7 @@
 import cv2 as cv
-import numpy as np
 import argparse
-import command as cmd
 
-
-QUIT = [ord("q"), 27]
+import video
 
 
 parser = argparse.ArgumentParser()
@@ -14,20 +11,31 @@ args = parser.parse_args()
 dev = args.device
 cap = cv.VideoCapture(dev)
 
+brightness = 0.01
+contrast = 0.95
 w = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
-h = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+h = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT)) // 2
 cv.namedWindow("preview", cv.WINDOW_GUI_NORMAL)
 cv.resizeWindow("preview", w, h)
 
 ret, frame = cap.read()
 while ret:
-    if len(frame) > w * h:
-        frame, _ = np.array_split(frame, 2)
+    frame = video.raw(frame, contrast, brightness)
     cv.imshow("preview", frame)
 
     keyPress = cv.waitKey(1)
-    if keyPress in QUIT:
+    if keyPress == ord("q"):
         break
+
+    if keyPress == ord("a"):
+        brightness += 0.01
+    if keyPress == ord("d"):
+        brightness -= 0.01
+
+    if keyPress == ord("w"):
+        contrast += 0.05
+    if keyPress == ord("s"):
+        contrast -= 0.05
 
     ret, frame = cap.read()
 
