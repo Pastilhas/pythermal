@@ -34,6 +34,7 @@ class Video:
         r = r / 64 - 273  # value to degree Celsius
 
         img = r.copy()  # clone
+        img = img.clip(self.min_temp, self.max_temp)
         img = (img - self.min_temp) / (
             self.max_temp - self.min_temp
         )  # normalize with [min, max]
