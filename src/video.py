@@ -26,11 +26,11 @@ class Video:
     def show(self) -> bool:
         ret, frame = self.cap.read()
         if ret:
-            frame = self.transform(frame)
-            cv.imshow("preview", frame)
+            _, norm = self.transform(frame)
+            cv.imshow("preview", norm)
             if self.out and self.recording:
                 path = f"{self.out}/{self.n_frame}.bmp"
-                cv.imwrite(path, frame * 255)
+                cv.imwrite(path, norm * 255)
                 self.n_frame += 1
         return ret
 
@@ -45,4 +45,4 @@ class Video:
         img = img - self.min_temp
         img = img / (self.max_temp - self.min_temp)  # normalize with [min, max]
         img = img * self.contrast + self.brightness  # add contrast and brightness
-        return img
+        return r, img
