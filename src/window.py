@@ -1,11 +1,16 @@
 import cv2 as cv
 
 
+WHITE = (255, 255, 255)
+FONT = cv.QT_FONT_NORMAL
+
+
 class Window:
     uid = 0
 
-    def __init__(self, w: int, h: int) -> None:
+    def __init__(self, src, w: int, h: int) -> None:
         self.name = f"preview{Window.uid}"
+        self.src = src
         self.w = w
         self.h = h
         cv.namedWindow(self.name, cv.WINDOW_GUI_NORMAL)
@@ -17,16 +22,14 @@ class Window:
 
     def show(self, frame) -> None:
         img = frame * self.contrast + self.brightness
-        cv.putText(
-            img,
-            f"{self.brightness:.1f} {self.contrast:.1f}",
-            (0, self.h + 1),
-            cv.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            (255, 255, 255),
-            1,
-            cv.LINE_AA,
-        )
+        text = f"{self.brightness:.1f} {self.contrast:.1f}"
+        pos = (0, self.h - 2)
+        cv.putText(img, text, pos, FONT, 0.3, WHITE, 1, cv.LINE_AA)
+
+        if self.src.recorder:
+            pos = (self.w - 22, 8)
+            cv.putText(img, "rec", pos, FONT, 0.5, WHITE, 1, cv.LINE_AA)
+
         cv.imshow(self.name, img)
 
     def parse(self, key: int) -> None:

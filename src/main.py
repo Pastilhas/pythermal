@@ -12,7 +12,7 @@ parser.add_argument("path", type=str)
 args = parser.parse_args()
 
 vid = P2Pro(args.cam)
-win = Window(vid.w, vid.h)
+win = Window(vid, vid.w, vid.h)
 vid.window = win
 
 rgb = cv.VideoCapture(0)
