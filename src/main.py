@@ -1,5 +1,7 @@
+from datetime import datetime
 import cv2 as cv
 import argparse
+import os
 
 import video
 
@@ -10,8 +12,6 @@ parser.add_argument("cam2", type=int)
 args = parser.parse_args()
 
 vid = video.Video(args.cam1)
-
-n_rec = 0
 
 while vid.show():
     keyPress = cv.waitKey(1)
@@ -41,7 +41,8 @@ while vid.show():
     if keyPress == ord("g"):
         vid.recording = not vid.recording
         if vid.recording:
-            vid.out = f"./img/{n_rec}"
-            n_rec += 1
+            vid.out = f"./img/{datetime.now().strftime("%Y%m%d%H%M%S")}"
+            os.mkdir(vid.out)
+            vid.n_frame = 0
 
 vid.close()
