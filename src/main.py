@@ -9,7 +9,7 @@ parser.add_argument("device", type=int, nargs="?", default=0)
 args = parser.parse_args()
 
 dev = args.device
-vid = video.Video(dev)
+vid = video.Video(dev, "./img")
 
 while vid.show():
     keyPress = cv.waitKey(1)
@@ -35,5 +35,8 @@ while vid.show():
         vid.max_temp += 1
     if keyPress == ord("v"):
         vid.max_temp -= 1
+
+    if keyPress == ord("g"):
+        vid.recording = not vid.recording
 
 vid.close()
