@@ -1,48 +1,45 @@
-from datetime import datetime
 import cv2 as cv
 import argparse
-import os
 
-import video
+from recorder import Recorder
+from video import Video
+from window import Window
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("cam1", type=int)
-parser.add_argument("cam2", type=int)
+parser.add_argument("cam", type=int)
+parser.add_argument("path", type=str)
 args = parser.parse_args()
 
-vid = video.Video(args.cam1)
+vid = Video(args.cam)
+win = Window(vid.w, vid.h)
+vid.window = win
+
+fps = int(vid.cap.get(cv.CAP_PROP_FPS))
 
 while vid.show():
-    keyPress = cv.waitKey(1)
-    if keyPress == ord("q"):
+    key = cv.waitKey(1000 // fps)
+    win.parse(key)
+
+    if key == ord("q"):
         break
 
-    if keyPress == ord("a"):
-        vid.brightness += 0.05
-    if keyPress == ord("z"):
-        vid.brightness -= 0.05
-
-    if keyPress == ord("s"):
-        vid.contrast += 0.05
-    if keyPress == ord("x"):
-        vid.contrast -= 0.05
-
-    if keyPress == ord("d"):
+    if key == ord("d"):
         vid.min_temp += 1
-    if keyPress == ord("c"):
+    if key == ord("c"):
         vid.min_temp -= 1
 
-    if keyPress == ord("f"):
+    if key == ord("f"):
         vid.max_temp += 1
-    if keyPress == ord("v"):
+    if key == ord("v"):
         vid.max_temp -= 1
 
-    if keyPress == ord("g"):
-        vid.recording = not vid.recording
-        if vid.recording:
-            vid.out = f"./img/{datetime.now().strftime("%Y%m%d%H%M%S")}"
-            os.mkdir(vid.out)
-            vid.n_frame = 0
+    if key == ord("g"):
+        if vid.recorder:
+            vid.recorder = None
+        else:
+            rec = Recorder(vid, args.path, timeout=2)
+            vid.recorder = rec
 
+win.close()
 vid.close()
