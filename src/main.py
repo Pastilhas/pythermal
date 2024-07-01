@@ -15,10 +15,10 @@ vid = Video(args.cam)
 win = Window(vid.w, vid.h)
 vid.window = win
 
-fps = int(vid.cap.get(cv.CAP_PROP_FPS))
+rgb = cv.VideoCapture(0)
 
 while vid.show():
-    key = cv.waitKey(1000 // fps)
+    key = cv.waitKey(1000 // vid.fps)
     win.parse(key)
 
     if key == ord("q"):
@@ -40,6 +40,9 @@ while vid.show():
         else:
             rec = Recorder(vid, args.path, timeout=2)
             vid.recorder = rec
+            ret, img = rgb.read()
+            cv.imwrite(f"{rec.path}.bmp", img)
 
+rgb.release()
 win.close()
 vid.close()
