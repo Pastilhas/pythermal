@@ -35,14 +35,14 @@ class Video:
         return ret
 
     def transform(self, frame):
-        r = np.reshape(frame[0], (2, 192, 256, 2))  # separate image and data
-        r = r[1, :, :, :].astype(np.intc)  # get data
-        r = (r[:, :, 1] << 8) + r[:, :, 0]  # rearrange values
-        r = r / 64 - 273  # value to degree Celsius
+        raw = np.reshape(frame[0], (2, 192, 256, 2))  # separate image and data
+        raw = raw[1, :, :, :].astype(np.intc)  # get data
+        raw = (raw[:, :, 1] << 8) + raw[:, :, 0]  # rearrange values
+        raw = (raw >> 6) - 273  # value to degree Celsius
 
-        img = r.copy()  # clone
+        img = raw.copy()  # clone
         img = img.clip(self.min_temp, self.max_temp)
         img = img - self.min_temp
         img = img / (self.max_temp - self.min_temp)  # normalize with [min, max]
         img = img * self.contrast + self.brightness  # add contrast and brightness
-        return r, img
+        return raw, img
