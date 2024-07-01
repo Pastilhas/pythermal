@@ -5,18 +5,17 @@ import time
 
 
 class Recorder:
-    def __init__(self, src, path, timeout=0, frames=0):
+    def __init__(self, src, path, timeout=0, frames=0) -> None:
         self.path = f"{path}/{datetime.now().strftime("%Y%m%d%H%M%S")}"
         os.mkdir(self.path)
 
+        self.n_frame = 0
         self.start = time.time()
         self.timeout = timeout
         self.frames = frames
         self.src = src
 
-        self.n_frame = 0
-
-    def show(self, frame):
+    def show(self, frame) -> None:
         if (
             self.timeout
             and time.time() - self.start >= self.timeout

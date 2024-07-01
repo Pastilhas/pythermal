@@ -4,7 +4,7 @@ import cv2 as cv
 class Window:
     uid = 0
 
-    def __init__(self, w, h):
+    def __init__(self, w: int, h: int) -> None:
         self.name = f"preview{Window.uid}"
         self.w = w
         self.h = h
@@ -15,7 +15,7 @@ class Window:
         self.brightness = 0.0
         self.contrast = 1.0
 
-    def show(self, frame):
+    def show(self, frame) -> None:
         img = frame * self.contrast + self.brightness
         cv.putText(
             img,
@@ -29,7 +29,7 @@ class Window:
         )
         cv.imshow(self.name, img)
 
-    def parse(self, key):
+    def parse(self, key: int) -> None:
         if key == ord("a"):
             self.brightness += 0.05
         if key == ord("z"):
@@ -40,5 +40,5 @@ class Window:
         if key == ord("x"):
             self.contrast -= 0.05
 
-    def close(self):
+    def close(self) -> None:
         cv.destroyWindow(self.name)

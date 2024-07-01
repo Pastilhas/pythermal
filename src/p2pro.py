@@ -6,19 +6,20 @@ from window import Window
 
 
 class P2Pro:
-    def __init__(self, device: int, output: str = "") -> None:
+    def __init__(self, device: int) -> None:
         self.min_temp = 10
         self.max_temp = 60
+
         self.window: Window | None = None
         self.recorder: Recorder | None = None
+
         self.cap = cv.VideoCapture(device)
         self.cap.set(cv.CAP_PROP_CONVERT_RGB, 0)
         self.w = int(self.cap.get(cv.CAP_PROP_FRAME_WIDTH))
         self.h = int(self.cap.get(cv.CAP_PROP_FRAME_HEIGHT)) // 2
         self.fps = int(self.cap.get(cv.CAP_PROP_FPS))
-        self.out = output
 
-    def close(self):
+    def close(self) -> None:
         self.cap.release()
 
     def show(self) -> bool:
