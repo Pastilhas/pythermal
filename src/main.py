@@ -5,11 +5,13 @@ import video
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("device", type=int, nargs="?", default=0)
+parser.add_argument("cam1", type=int)
+parser.add_argument("cam2", type=int)
 args = parser.parse_args()
 
-dev = args.device
-vid = video.Video(dev, "./img")
+vid = video.Video(args.cam1)
+
+n_rec = 0
 
 while vid.show():
     keyPress = cv.waitKey(1)
@@ -38,5 +40,8 @@ while vid.show():
 
     if keyPress == ord("g"):
         vid.recording = not vid.recording
+        if vid.recording:
+            vid.out = f"./img/{n_rec}"
+            n_rec += 1
 
 vid.close()
