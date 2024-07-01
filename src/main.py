@@ -2,7 +2,7 @@ import cv2 as cv
 import argparse
 
 from recorder import Recorder
-from video import Video
+from p2pro import P2Pro
 from window import Window
 
 
@@ -11,7 +11,7 @@ parser.add_argument("cam", type=int)
 parser.add_argument("path", type=str)
 args = parser.parse_args()
 
-vid = Video(args.cam)
+vid = P2Pro(args.cam)
 win = Window(vid.w, vid.h)
 vid.window = win
 

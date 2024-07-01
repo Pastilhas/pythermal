@@ -5,7 +5,7 @@ from recorder import Recorder
 from window import Window
 
 
-class Video:
+class P2Pro:
     def __init__(self, device: int, output: str = "") -> None:
         self.min_temp = 10
         self.max_temp = 60
