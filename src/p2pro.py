@@ -46,3 +46,14 @@ class P2Pro:
         norm = norm - self.min_temp
         norm = norm / (self.max_temp - self.min_temp)  # normalize with [min, max]
         return raw, norm
+
+    def is_recording(self) -> bool:
+        return self.recorder is not None
+
+    def start_recording(self, path: str, timeout: int = 0, frames: int = 0) -> str:
+        rec = Recorder(self, path, timeout, frames)
+        self.recorder = rec
+        return rec.path
+
+    def stop_recording(self) -> None:
+        self.recorder = None

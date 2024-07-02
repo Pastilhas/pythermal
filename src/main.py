@@ -1,7 +1,7 @@
+import time
 import cv2 as cv
 import argparse
 
-from recorder import Recorder
 from p2pro import P2Pro
 from window import Window
 
@@ -11,11 +11,16 @@ parser.add_argument("cam", type=int)
 parser.add_argument("path", type=str)
 args = parser.parse_args()
 
+t = time.time()
+print(f"[{time.time()-t:.2f}] Starting system")
+
 vid = P2Pro(args.cam)
 win = Window(vid, vid.w, vid.h)
 vid.window = win
+print(f"[{time.time()-t:.2f}] Loaded p2pro")
 
-rgb = cv.VideoCapture(0)
+rgb = cv.VideoCapture(2)
+print(f"[{time.time()-t:.2f}] Loaded rgb")
 
 while vid.show():
     key = cv.waitKey(1000 // vid.fps)
@@ -35,13 +40,13 @@ while vid.show():
         vid.max_temp -= 1
 
     if key == ord("g"):
-        if vid.recorder:
-            vid.recorder = None
+        if vid.is_recording():
+            vid.stop_recording()
         else:
-            rec = Recorder(vid, args.path, timeout=2)
-            vid.recorder = rec
+            path = vid.start_recording(args.path, 2)
+            print(f"Recording to {path}")
             ret, img = rgb.read()
-            cv.imwrite(f"{rec.path}.bmp", img)
+            cv.imwrite(f"{path}.bmp", img)
 
 rgb.release()
 win.close()
