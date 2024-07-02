@@ -23,6 +23,9 @@ class Camera:
     def stop_record(self):
         self.recorder = None
 
+    def is_recording(self):
+        return self.recorder is not None
+
     def read_frame(self):
         ret, frame = self.capture.read()
         if ret:

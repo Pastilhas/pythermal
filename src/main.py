@@ -1,3 +1,5 @@
+from datetime import datetime
+import os
 from camera import Camera
 from p2pro import P2Pro
 from window import Window
@@ -23,8 +25,18 @@ def main():
         if not (ret1 and ret2):
             break
 
-        if cv.waitKey(1) == ord("q"):
+        k = cv.waitKey(1)
+        if k == ord("q"):
             break
+
+        if k == ord("g"):
+            if camera1.is_recording():
+                camera1.stop_record()
+            else:
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                path = f"img/{timestamp}"
+                os.mkdir(path)
+                camera1.start_record(path)
 
     camera1.close()
     camera2.close()
