@@ -13,9 +13,7 @@ class Camera:
 
     def link_window(self, window):
         self.window = window
-        width = int(self.capture.get(cv.CAP_PROP_FRAME_WIDTH))
-        height = int(self.capture.get(cv.CAP_PROP_FRAME_HEIGHT))
-        self.window.resize(width, height)
+        self.window.resize(self.width, self.height)
 
     def start_record(self, output_folder):
         self.recorder = Recorder(output_folder)
