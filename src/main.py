@@ -1,62 +1,44 @@
-import time
-import cv2 as cv
-import argparse
-
+from datetime import datetime
+import os
+from camera import Camera
 from p2pro import P2Pro
 from window import Window
+import cv2 as cv
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("path", type=str)
-args = parser.parse_args()
+def main():
+    camera1 = P2Pro(1)
+    camera2 = Camera(2, cv.CAP_DSHOW)
 
-t = time.time()
-print(f"[{time.time()-t:.2f}] Starting system")
+    window1 = Window("Camera 1")
+    window2 = Window("Camera 2")
 
-vid = P2Pro(1)
-win = Window(vid, vid.w, vid.h)
-vid.window = win
-print(f"[{time.time()-t:.2f}] Loaded p2pro")
+    camera1.link_window(window1)
+    camera2.link_window(window2)
 
-rgb = cv.VideoCapture(
-    2,
-    cv.CAP_DSHOW,
-    params=[
-        cv.CAP_PROP_FRAME_WIDTH,
-        1920,
-        cv.CAP_PROP_FRAME_HEIGHT,
-        1080,
-    ],
-)
+    while True:
+        ret1, _ = camera1.read_frame()
+        ret2, _ = camera2.read_frame()
 
-print(f"[{time.time()-t:.2f}] Loaded rgb")
+        if not (ret1 and ret2):
+            break
 
-while vid.show():
-    key = cv.waitKey(1000 // vid.fps)
-    win.parse(key)
+        k = cv.waitKey(1)
+        if k == ord("q"):
+            break
 
-    if key == ord("q"):
-        break
+        if k == ord("g"):
+            if camera1.is_recording():
+                camera1.stop_record()
+            else:
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                path = f"img/{timestamp}"
+                os.mkdir(path)
+                camera1.start_record(path)
 
-    if key == ord("d"):
-        vid.min_temp += 1
-    if key == ord("c"):
-        vid.min_temp -= 1
+    camera1.close()
+    camera2.close()
 
-    if key == ord("f"):
-        vid.max_temp += 1
-    if key == ord("v"):
-        vid.max_temp -= 1
 
-    if key == ord("g"):
-        if vid.is_recording():
-            vid.stop_recording()
-        else:
-            path = vid.start_recording(args.path, 3)
-            print(f"Recording to {path}")
-            ret, img = rgb.read()
-            cv.imwrite(f"{path}.bmp", img)
-
-rgb.release()
-win.close()
-vid.close()
+if __name__ == "__main__":
+    main()

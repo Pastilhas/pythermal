@@ -1,30 +1,18 @@
-from datetime import datetime
-import os
 import cv2 as cv
-import time
+import os
 
 
 class Recorder:
-    def __init__(self, src, path, timeout=0, frames=0) -> None:
-        self.path = f"{path}/{datetime.now().strftime("%Y%m%d%H%M%S")}"
-        os.mkdir(self.path)
-
+    def __init__(self, output_folder):
         self.n_frame = 0
-        self.start = time.time()
-        self.timeout = timeout
-        self.frames = frames
-        self.src = src
+        self.output_folder = output_folder
+        os.makedirs(output_folder, exist_ok=True)
 
-    def show(self, frame) -> None:
-        if (
-            self.timeout
-            and time.time() - self.start >= self.timeout
-            or self.frames
-            and self.n_frame >= self.frames
-        ):
-            self.src.recorder = None
-            return
-
-        path = f"{self.path}/{self.n_frame}.bmp"
-        cv.imwrite(path, frame * 255)
+    def save_frame(self, frame, is_norm=False):
+        filename = f"{self.output_folder}/{self.n_frame:03}.png"
         self.n_frame += 1
+
+        if is_norm:
+            frame = frame * 255
+
+        cv.imwrite(filename, frame)
