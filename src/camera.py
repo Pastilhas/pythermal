@@ -3,9 +3,9 @@ import cv2 as cv
 
 
 class Camera:
-    def __init__(self, camera_id):
+    def __init__(self, camera_id, api=cv.CAP_ANY):
         self.camera_id = camera_id
-        self.capture = cv.VideoCapture(camera_id)
+        self.capture = cv.VideoCapture(camera_id, api)
         self.window = None
         self.recorder = None
         self.width = int(self.capture.get(cv.CAP_PROP_FRAME_WIDTH))

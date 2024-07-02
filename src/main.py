@@ -6,7 +6,7 @@ import cv2 as cv
 
 def main():
     camera1 = P2Pro(1)
-    camera2 = Camera(2)
+    camera2 = Camera(2, cv.CAP_DSHOW)
 
     window1 = Window("Camera 1")
     window2 = Window("Camera 2")
