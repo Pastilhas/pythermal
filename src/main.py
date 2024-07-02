@@ -1,10 +1,11 @@
 from camera import Camera
+from p2pro import P2Pro
 from window import Window
 import cv2 as cv
 
 
 def main():
-    camera1 = Camera(1)
+    camera1 = P2Pro(1)
     camera2 = Camera(2)
 
     window1 = Window("Camera 1")

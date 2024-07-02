@@ -8,6 +8,8 @@ class Camera:
         self.capture = cv.VideoCapture(camera_id)
         self.window = None
         self.recorder = None
+        self.width = int(self.capture.get(cv.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.capture.get(cv.CAP_PROP_FRAME_HEIGHT))
 
     def link_window(self, window):
         self.window = window
