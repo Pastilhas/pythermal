@@ -7,19 +7,28 @@ from window import Window
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("cam", type=int)
 parser.add_argument("path", type=str)
 args = parser.parse_args()
 
 t = time.time()
 print(f"[{time.time()-t:.2f}] Starting system")
 
-vid = P2Pro(args.cam)
+vid = P2Pro(1)
 win = Window(vid, vid.w, vid.h)
 vid.window = win
 print(f"[{time.time()-t:.2f}] Loaded p2pro")
 
-rgb = cv.VideoCapture(2)
+rgb = cv.VideoCapture(
+    2,
+    cv.CAP_DSHOW,
+    params=[
+        cv.CAP_PROP_FRAME_WIDTH,
+        1920,
+        cv.CAP_PROP_FRAME_HEIGHT,
+        1080,
+    ],
+)
+
 print(f"[{time.time()-t:.2f}] Loaded rgb")
 
 while vid.show():
@@ -43,7 +52,7 @@ while vid.show():
         if vid.is_recording():
             vid.stop_recording()
         else:
-            path = vid.start_recording(args.path, 2)
+            path = vid.start_recording(args.path, 3)
             print(f"Recording to {path}")
             ret, img = rgb.read()
             cv.imwrite(f"{path}.bmp", img)
