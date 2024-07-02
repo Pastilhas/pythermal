@@ -12,11 +12,13 @@ class Window:
         cv.namedWindow(self.name)
 
     def show_frame(self, frame):
+        img = frame.copy()
+
         if self.src.is_recording():
             pos = (self.width - 25, 10)
-            cv.putText(frame, "rec", pos, FONT, 0.5, WHITE, 1, cv.LINE_AA)
+            cv.putText(img, "rec", pos, FONT, 0.5, WHITE, 1, cv.LINE_AA)
 
-        cv.imshow(self.name, frame)
+        cv.imshow(self.name, img)
 
     def resize(self, width, height):
         self.width = width
