@@ -14,6 +14,7 @@ class Camera:
     def link_window(self, window):
         self.window = window
         self.window.resize(self.width, self.height)
+        self.window.src = self
 
     def start_record(self, output_folder):
         self.recorder = Recorder(output_folder)

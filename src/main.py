@@ -16,8 +16,6 @@ def main():
     camera1.link_window(window1)
     camera2.link_window(window2)
 
-    # camera1.start_record("camera1_output")
-
     while True:
         ret1, _ = camera1.read_frame()
         ret2, _ = camera2.read_frame()
