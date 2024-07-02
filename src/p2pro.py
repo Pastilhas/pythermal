@@ -30,5 +30,5 @@ class P2Pro(Camera):
             if self.window:
                 self.window.show_frame(tframe)
             if self.recorder:
-                self.recorder.save_frame(tframe)
+                self.recorder.save_frame(tframe, True)
         return ret, tframe
