@@ -14,7 +14,7 @@ class Window:
         self.w = w
         self.h = h
         cv.namedWindow(self.name, cv.WINDOW_GUI_NORMAL)
-        cv.resizeWindow(self.name, w, h)
+        cv.resizeWindow(self.name, w * 2, h * 2)
         Window.uid += 1
 
         self.brightness = 0.0
