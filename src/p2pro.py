@@ -4,12 +4,12 @@ import cv2 as cv
 
 
 class P2Pro(Camera):
-    def __init__(self, camera_id):
+    def __init__(self, camera_id, min=0, max=100):
         super().__init__(camera_id)
         self.capture.set(cv.CAP_PROP_CONVERT_RGB, 0)
         self.height = int(self.capture.get(cv.CAP_PROP_FRAME_HEIGHT)) // 2
-        self.min_temp = 10
-        self.max_temp = 60
+        self.min_temp = min
+        self.max_temp = max
 
     def transform_frame(self, frame):
         raw = np.reshape(frame[0], (2, 192, 256, 2))  # separate image and data

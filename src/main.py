@@ -7,7 +7,7 @@ import os
 
 
 def main():
-    camera1 = P2Pro(1)
+    camera1 = P2Pro(1, 10, 100)
     camera2 = Camera(
         2,
         cv.CAP_DSHOW,
