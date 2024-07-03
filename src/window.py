@@ -8,7 +8,8 @@ FONT = cv.QT_FONT_NORMAL
 class Window:
     def __init__(self, name):
         self.name = name
-        self.src: Camera | None = None
+        self.src: Camera = None
+
         cv.namedWindow(self.name)
 
     def show_frame(self, frame):
@@ -20,10 +21,13 @@ class Window:
 
         cv.imshow(self.name, img)
 
+    def link_camera(self, src, w, h):
+        self.src = src
+        self.resize(w, h)
+
     def resize(self, width, height):
         self.width = width
         self.height = height
-        cv.resizeWindow(self.name, width, height)
 
     def close(self):
         cv.destroyWindow(self.name)

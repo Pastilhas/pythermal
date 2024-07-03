@@ -3,9 +3,9 @@ import cv2 as cv
 
 
 class Camera:
-    def __init__(self, camera_id, api=cv.CAP_ANY):
+    def __init__(self, camera_id, api=cv.CAP_ANY, params=[]):
         self.camera_id = camera_id
-        self.capture = cv.VideoCapture(camera_id, api)
+        self.capture = cv.VideoCapture(camera_id, api, params=params)
         self.window = None
         self.recorder = None
         self.width = int(self.capture.get(cv.CAP_PROP_FRAME_WIDTH))
@@ -13,11 +13,10 @@ class Camera:
 
     def link_window(self, window):
         self.window = window
-        self.window.resize(self.width, self.height)
-        self.window.src = self
+        self.window.link_camera(self, self.width, self.height)
 
     def start_record(self, output_folder):
-        self.recorder = Recorder(output_folder)
+        self.recorder = Recorder(self, output_folder)
 
     def stop_record(self):
         self.recorder = None
