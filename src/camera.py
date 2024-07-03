@@ -26,11 +26,14 @@ class Camera:
 
     def read_frame(self):
         ret, frame = self.capture.read()
+
         if ret:
             if self.window:
                 self.window.show_frame(frame)
+
             if self.recorder:
                 self.recorder.save_frame(frame)
+
         return ret, frame
 
     def close(self):
